@@ -150,9 +150,9 @@ func TestCreateGBlock(t *testing.T){
 	bc:=NewBlockchainFromGB(genesisblock)
 	if !genesisblock.IsCorrectlyHashed(difficulty)||
 		bc.GetBalance("ammar")!=10{
+			fmt.Println("Coorectly hashed=",genesisblock.IsCorrectlyHashed(difficulty))
 			t.Error("TestCreateGBlock failed")
 			test_note=test_note-3
-	
 		}
 	note=note+test_note
 }
@@ -191,6 +191,7 @@ func TestSerialization(t *testing.T){
 	
 	if _, err := os.Stat("bctest.json");errors.Is(err, os.ErrNotExist)  {
 		t.Error("File was not written in the disk")
+
 		test_note=test_note-1
 	}
 		
@@ -213,9 +214,9 @@ func TestSuccessfulTransfert(t *testing.T){
 	tx,err:=bc.NewTransfertTX("ali","ammar", 5)
 	bc.AddBlock([]*Transaction{tx})
 	if err !=nil || bc.GetBalance("ammar")!=15 || bc.GetBalance("ali")!=5{
+		
 		t.Error("TestSuccTransfert failed")
 		test_note=test_note-2
-
 	}
 	note=note+test_note
 }

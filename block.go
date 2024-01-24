@@ -4,6 +4,8 @@ import ("crypto/sha256"
 	"time"
 )
 // Block keeps block headers
+// A Transaction is a unit of data that represents
+// a transfer of value between two parties
 type Block struct {
 	Hash          []byte
 	PrevBlockHash []byte
@@ -36,15 +38,15 @@ func NewBlock(txs []*Transaction, prevBHash []byte, mine bool, zeroBits int) *Bl
 }
 
 // Creates and returns genesis Block, its hash must start with zeroBits
+// The same as the new block, but with no previous hash
 func NewGBlock(cbtx []*Transaction, zeroBits int) *Block {
-	return nil
+	return NewBlock(cbtx, nil, true, zeroBits)
 }
 
 
 // true if the block is correclty Hashed 
 func (block *Block) IsCorrectlyHashed(zeroBits int) bool {
-	
-	return false
+	return StartsWithXZeros(block.Hash, zeroBits)
 }
 
 // Hashes a block, private fnuction 
@@ -61,11 +63,14 @@ func (block *Block) computeHash() []byte {
 
 // Computes and sets the hash of "block"
 func (block *Block) SetHash(){
-	
+	block.Hash = block.computeHash()
 }		
 
 // Mines a block : iterates over nonces until the hash starts with the
 // number of zeros defined by zeroBits
 func (block *Block) Mine(zeroBits int) {
-
+	for !block.IsCorrectlyHashed(zeroBits) {
+		block.Nonce += 1
+		block.SetHash()
+	}
 }		

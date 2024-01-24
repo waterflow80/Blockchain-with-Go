@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"log"
-	"errors"
 )
 var ErrInsufficientFunds =errors.New("Unsufficient funds!") 
 const reward = 10 // The reward to the genesis adresses..  
@@ -36,8 +36,12 @@ type Transaction struct {
 	TxOuts []TXOutput
 }
 
-func NewTransaction (hash []byte, txIns  []TXInput, TxOuts []TXOutput)*Transaction{
-	return nil
+func NewTransaction (hash []byte, txIns  []TXInput, txOuts []TXOutput)*Transaction{
+	var transaction Transaction
+	transaction.Hash = hash
+	transaction.TxIns = txIns
+	transaction.TxOuts = txOuts
+	return &transaction
 }
 
 // Computes the Hash of a transaction
@@ -60,6 +64,7 @@ func NewCoinbaseTX(to, data string) *Transaction {
 
 	txin := TXInput{[]byte{}, -1, data}
 	txout := TXOutput{reward, to}
-	tx := NewTransaction(nil, []TXInput{txin}, []TXOutput{txout})
+	tx := NewTransaction([]byte{}, []TXInput{txin}, []TXOutput{txout})
+	tx.Hash = tx.ComputeHash()
 	return tx
 }

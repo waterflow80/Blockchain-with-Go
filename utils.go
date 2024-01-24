@@ -4,17 +4,19 @@ import (
 	"encoding/hex"
 	"fmt"
 	"strings"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 // IntToHex converts an int64 to a byte array of length 8
 //
-func IntToHex(num int64) []byte {
-	bytesArr := make([]byte, 8) 
-	hexadecimalValue := fmt.Sprintf("%x", num)
-	bytesTempArr, _ := hex.DecodeString(hexadecimalValue)
-	copy(bytesArr, bytesTempArr)
-	return bytesArr
-}
+	func IntToHex(num int64) []byte {
+		bytesArr := make([]byte, 8) 
+		hexadecimalValue := fmt.Sprintf("%016x", num)
+		bytesTempArr, _ := hex.DecodeString(hexadecimalValue)
+		copy(bytesArr, bytesTempArr)
+		return bytesArr
+	}
 
 /**
 Convert a byte array into a string of bytes
@@ -81,7 +83,7 @@ func EqualMaps(a, b map[string]int) bool {
 }
 
 func EqualTransactions(a,b Transaction) bool{
-	return EqualSlices(a.Hash,b.Hash)
+	return EqualSlices(a.Hash, b.Hash)
 }
 
 func EqualBlocks(a,b Block) bool{
@@ -114,3 +116,33 @@ func Serialize(input [][]byte )[]byte {
 	return inputArr;
 }
 
+/**
+	Serialize the given blockchain into a json representation
+	of type string. eg: {GHash: [aa bb 00 ...],
+											 GChain: [{
+												hash: ......,
+												prevBlockHash: ....,
+												...
+											 }]}*/
+// func BlockchainToJsonString(bc *Blockchain) string {
+// 	var jsonStr string = `{`
+// 	// GHash
+// 	jsonStr += `"GHash":`  + fmt.Sprintf("%s", bc.GHash) + `,`;
+	
+// 	// Chain
+// 	for i:=0; i<len(bc.Chain); i++ {
+
+// 	}
+// }
+
+
+func BlockchainToMap(bc *Blockchain) map[string]interface{} {
+	bcMap := map[string]interface{}{}
+	err := mapstructure.Decode(bc, &bcMap)
+	if err != nil {
+		fmt.Println("Decode Failed !!!")
+		panic(err)
+	}
+	//fmt.Printf("%#v", bcMap)
+	return bcMap
+} 

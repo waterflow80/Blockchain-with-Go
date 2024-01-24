@@ -221,6 +221,19 @@ func TestSuccessfulTransfert(t *testing.T){
 	note=note+test_note
 }
 
+/**
+	Testing a blockchain transfers with more than 2 actors*/
+func TestSuccessfulTransfert2(t *testing.T){
+	bc:= NewBlockchain([]string{"ammar","ali", "james"})
+	tx,err:=bc.NewTransfertTX("ali","ammar", 5)
+	tx1,err1:=bc.NewTransfertTX("ali","james", 5)
+	tx2,err2:=bc.NewTransfertTX("ammar","ali", 10)
+	bc.AddBlock([]*Transaction{tx, tx1, tx2})
+	if err !=nil || err1 !=nil || err2 !=nil || bc.GetBalance("ammar")!=5 || bc.GetBalance("ali")!=10 || bc.GetBalance("james")!=15{
+		t.Error("TestSuccTransfert failed")
+	}
+}
+
 
 func TestImpossibleTransfert(t *testing.T){
 	var test_note=2.0

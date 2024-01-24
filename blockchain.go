@@ -1,10 +1,10 @@
 package main
 
 import (
-	
+
 )
 
-const ZEROBITS int = 17 // Constraint on the hash (used in mining)
+const DIFFICULTY int = 17 // Constraint on the hash (used in mining)
 
 // Blockchain implements interactions with a DB
 type Blockchain struct {
@@ -18,12 +18,12 @@ func (bc *Blockchain) AddBlock(transactions []*Transaction) {
 	if len(bc.GHash) == 0 {
 		// Chain is empty
 		// Adding a the Genisis block
-		GBlock := NewGBlock(transactions, ZEROBITS)
+		GBlock := NewGBlock(transactions, DIFFICULTY)
 		bc.GHash = GBlock.Hash
 		bc.Chain = append(bc.Chain, *GBlock)
 	} else {
 		// Chain is not empty
-		block := NewBlock(transactions, bc.Chain[len(bc.Chain)-1].Hash, true, ZEROBITS)
+		block := NewBlock(transactions, bc.Chain[len(bc.Chain)-1].Hash, true, DIFFICULTY)
 		bc.Chain = append(bc.Chain, *block)
 	}
 }
@@ -46,9 +46,12 @@ func  (bc *Blockchain) NewTransfertTX(from, to string, amount int) (*Transaction
 // CreateBlockchain creates a new blockchain, evey adress in adresses
 // is given the initial 
 func NewBlockchain(addresses []string) *Blockchain {
-	tx1 := NewCoinbaseTX(addresses[0], "Reward for " + addresses[0])
-	tx2 := NewCoinbaseTX(addresses[1], "Reward for " + addresses[1])
-	GBlock := NewGBlock([]*Transaction{tx1, tx2}, ZEROBITS)
+	var txs []*Transaction
+	for _, address := range addresses {
+		tx := NewCoinbaseTX(address, "Reward for " + address)
+		txs = append(txs, tx)
+	}
+	GBlock := NewGBlock(txs, DIFFICULTY)
 	bc := NewBlockchainFromGB(GBlock)
 	return bc
 }
@@ -70,7 +73,6 @@ func (bc *Blockchain) GetBalance(address string) int {
 				}
 			}
 		}
-
 	// 2. Caluating the amount debited (and substracting it)
 	// - Get all transacations ids from which it (the current address) has credited money from
 	outputTransactions := bc.getAllTransactionsByInputScriptSig(address)

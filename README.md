@@ -1,5 +1,5 @@
 # Bloockchain Implementation with Go
-This is a blockchain implementation using Go. Some of the functions and methods were already provided, and some others were developed by us.
+This is a basic blockchain implementation using Go. Some of the functions and methods were already provided, and some others were developed by us.
 
 ## Design and Data Structures
 ![Screenshot from 2024-01-24 15-48-14](https://github.com/waterflow80/Blockchain-with-Go/assets/82417779/c37d38f4-c02b-40ae-b0f3-8abeae566b7b)

@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"strings"
-
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -14,7 +13,7 @@ import (
 		bytesArr := make([]byte, 8) 
 		hexadecimalValue := fmt.Sprintf("%016x", num)
 		bytesTempArr, _ := hex.DecodeString(hexadecimalValue)
-		copy(bytesArr, bytesTempArr)
+		copy(bytesArr, bytesTempArr) // To ensure the length of 8 bytes
 		return bytesArr
 	}
 
@@ -115,26 +114,6 @@ func Serialize(input [][]byte )[]byte {
 	}
 	return inputArr;
 }
-
-/**
-	Serialize the given blockchain into a json representation
-	of type string. eg: {GHash: [aa bb 00 ...],
-											 GChain: [{
-												hash: ......,
-												prevBlockHash: ....,
-												...
-											 }]}*/
-// func BlockchainToJsonString(bc *Blockchain) string {
-// 	var jsonStr string = `{`
-// 	// GHash
-// 	jsonStr += `"GHash":`  + fmt.Sprintf("%s", bc.GHash) + `,`;
-	
-// 	// Chain
-// 	for i:=0; i<len(bc.Chain); i++ {
-
-// 	}
-// }
-
 
 func BlockchainToMap(bc *Blockchain) map[string]interface{} {
 	bcMap := map[string]interface{}{}
